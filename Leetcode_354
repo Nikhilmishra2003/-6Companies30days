@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int maxEnvelopes(vector<vector<int>>& envelopes) {
+        int n = envelopes.size();
+        sort(envelopes.begin(), envelopes.end(), [](const vector<int>& a, const vector<int>& b) {
+            if (a[0] != b[0]) return a[0] < b[0]; 
+            return a[1] > b[1]; 
+        });
+
+
+        vector<int> height;
+        for(auto &i:envelopes){
+            height.push_back(i[1]);
+        }
+
+        vector<int> temp;
+        for(auto &i:height){
+            if(temp.empty() || temp.back()<i){
+                temp.push_back(i);
+            }
+            else {
+                auto  it=lower_bound(temp.begin(),temp.end(),i);
+                *it=i;
+            }
+        }
+
+        return temp.size();
+    }
+};
