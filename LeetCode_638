@@ -1,0 +1,39 @@
+class Solution {
+public:
+
+    map<vector<int>, int> mp;
+
+    int shoppingOffers(vector<int>& price, vector<vector<int>>& special, vector<int>& needs) {
+        if(mp.count(needs) != 0){
+            return mp[needs];
+        }
+        int ans = 0;
+
+        for(int i = 0; i < price.size(); i++){
+            ans+=(price[i]*needs[i]);
+        }
+
+        for(int i = 0; i < special. size(); i++){
+            bool isvalid = true;
+            for(int j = 0; j < needs.size(); j++){
+                if(needs[j] < special[i][j]){
+                    isvalid = false;
+                }
+            }
+
+            if(isvalid){
+                for(int j = 0; j < needs.size(); j++){
+                    needs[j]-=special[i][j];
+                }
+                int prices =  special[i].back() + shoppingOffers(price, special, needs);
+                ans = min(ans, prices);
+
+                 for(int j = 0; j < needs.size(); j++){
+                    needs[j]+=special[i][j];
+                }
+            }
+        }
+
+        return mp[needs] = ans;
+    }
+};
