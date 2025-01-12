@@ -1,0 +1,27 @@
+ int i = low;
+    for (int j = low; j < high; ++j) {
+        if (order_map[arr[j]] < order_map[pivot]) {
+            swap(arr[i], arr[j]);
+            ++i;
+        } else if (order_map[arr[j]] == order_map[pivot]) {
+            swap(arr[j], arr[high]);
+            --j;
+        }
+    }
+    swap(arr[i], arr[high]);
+}
+
+// Function to match nuts and bolts
+void matchNutsAndBolts(vector<char>& nuts, vector<char>& bolts, int low, int high, unordered_map<char, int>& order_map) {
+    if (low < high) {
+        // Use the first bolt as the pivot to partition nuts
+        char pivot = bolts[high];
+        partition(nuts, pivot, order_map, low, high);
+
+        // Use the matched nut as the pivot to partition bolts
+        pivot = nuts[high];
+        partition(bolts, pivot, order_map, low, high);
+
+        // Recursively sort the parts
+        matchNutsAndBolts(nuts, bolts, low, high - 1, order_map);
+        matchNutsAndBolts(nuts, bolts, high + 1, high, order_map);
