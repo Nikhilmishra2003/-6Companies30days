@@ -1,0 +1,29 @@
+class Solution {
+public:
+    vector<string> topKFrequent(vector<string>& words, int k) {
+        unordered_map<string, int> count;
+        
+        for (const auto& word : words) {
+            count[word]++;
+        }
+
+        auto compare = [](const auto& a, const auto& b) {
+            return a.second == b.second ? a.first > b.first : a.second < b.second;
+        };
+
+        priority_queue<pair<string, int>, vector<pair<string, int>>, decltype(compare)> pq(compare);
+
+        for (const auto& entry : count) {
+            pq.push({entry.first, entry.second});
+        }
+
+        vector<string> result;
+
+        while (!pq.empty() && k-- > 0) {
+            result.push_back(pq.top().first);
+            pq.pop();
+        }
+
+        return result;
+    }
+};
