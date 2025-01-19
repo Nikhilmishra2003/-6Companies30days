@@ -1,0 +1,46 @@
+impl Solution {
+    pub fn asteroids_destroyed(mass: i32, mut asteroids: Vec<i32>) -> bool {
+        let mut ranges = Vec::with_capacity(100);
+        let mut last_ranges = Vec::with_capacity(100);
+        last_ranges.push((0, mass as u64));
+        for asteroid in asteroids.into_iter().map(|x| x as u64) {
+            // let first_greater = last_ranges.iter().position(|&(_, high)| asteroid <= high);
+            let mut first_greater = None;
+            for (curr_idx, &(low, high)) in last_ranges.iter().enumerate() {
+                if asteroid <= high {
+                    first_greater = Some(curr_idx);
+                    break;
+                }
+                ranges.push((low, high));
+            }
+
+            if let Some(idx) = first_greater {
+                let fold_result = last_ranges[idx..].iter().enumerate().try_fold(
+                    (asteroid, 2 * asteroid),
+                    |(curr_low, curr_high), (idx, &(low, high))| {
+                        if low <= curr_low && curr_low <= high {
+                            Ok((low, curr_high - curr_low + high))
+                        } else if low <= curr_high && curr_high <= high {
+                            Ok((curr_low, high - low + curr_high))
+                        } else {
+                            Err((idx, (curr_low, curr_high)))
+                        }
+                    },
+                );
+                match fold_result {
+                    Ok(range) => ranges.push(range),
+                    Err((offset, range)) => {
+                        ranges.push(range);
+                        ranges.extend(&last_ranges[idx + offset..]);
+                    }
+                }
+            } else {
+                ranges.push((asteroid, 2 * asteroid));
+            }
+            last_ranges.clear();
+            std::mem::swap(&mut ranges, &mut last_ranges);
+        }
+        last_ranges.len() == 1
+    }
+}
+        
