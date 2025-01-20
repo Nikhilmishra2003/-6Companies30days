@@ -1,0 +1,17 @@
+  int n = arr.size();
+    long long sumN = (n * (n + 1)) / 2;
+    long long sumSqN = (n * (n + 1) * (2 * n + 1)) / 6;
+
+    long long sumArr = 0, sumSqArr = 0;
+    for (int num : arr) {
+        sumArr += num;
+        sumSqArr += (long long)num * num;
+    }
+
+    long long diff = sumN - sumArr; // Missing - Repeating
+    long long sum = (sumSqN - sumSqArr) / diff; // Missing + Repeating
+
+    int missing = (diff + sum) / 2;
+    int repeating = sum - missing;
+
+    return {repeating, missing};
