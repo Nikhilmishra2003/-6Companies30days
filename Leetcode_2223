@@ -1,0 +1,36 @@
+class Solution {
+public:
+vector<int> Zalgo(string& s){
+    int n = s.size();
+    vector<int> z(n,0);
+    int l = 0;
+    int r = 0;
+    for(int i = 1;i < n;i++){
+        if( i <= r ){
+            z[i] = max(i - r,z[i-l]);
+        }
+        while(i + z[i] < n && s[z[i]] == s[i + z[i]]){
+            z[i]++;
+        }
+        if( i + z[i] > r ){
+            l = i;
+            r = z[i];
+        }
+    }
+    // 0 <----------> r-l
+    // l <--- i ----> r
+    // 0 <-> l-i
+    // l <-> i 
+    return z;
+}
+long long sumScores(string s) {
+    vector<int> _z = Zalgo(s);
+    int n =  s.size();
+    long long ans = s.size();
+    for(int i = 1;i < s.size();i++){
+        ans = ans + min(_z[i],n-i);
+    }
+    return ans;
+}
+
+};
